@@ -1,0 +1,22 @@
+# Rojo / Roblox place files
+*.rbxl
+*.rbxlx
+*.rbxm
+*.rbxmx
+sourcemap.json
+
+# Sync scratch
+.studio_sync/
+.mcp_sync/
+.sync_chunks/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs / secrets
+*.log
+.env
+.env.*
