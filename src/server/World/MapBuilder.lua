@@ -33,15 +33,16 @@ local PAD_DIAMETER = 10
 local PAD_THICK = 0.35
 local PAD_FRONT_OFFSET = STALL_DEPTH * 0.5 + PAD_DIAMETER * 0.45
 
--- Side-edge placement: stalls on left/right, spawn stays clear in the middle
+-- One-side row: TOOLS | SELL | BACKPACKS (SELL middle), spawn stays clear
 local EDGE_INSET = 10 -- stall center distance inward from floor edge
 local HALF_X = FLOOR_SIZE.X * 0.5
-local WEST_X = -(HALF_X - EDGE_INSET)
-local EAST_X = HALF_X - EDGE_INSET
--- West: Tools (north) + Sell (south). East: Backpacks. Gate stays north.
-local TOOLS_Z = -28
-local SELL_Z = 28
-local BACKPACKS_Z = 0
+local STALL_ROW_X = -(HALF_X - EDGE_INSET) -- west edge; fronts face center (+X)
+local STALL_SPACING = 18 -- center-to-center along Z (stall width 12 + gap)
+-- Facing the row from spawn (looking west): left→right = TOOLS | SELL | BACKPACKS
+-- Looking west, left is +Z (south), right is −Z (north).
+local TOOLS_Z = STALL_SPACING
+local SELL_Z = 0
+local BACKPACKS_Z = -STALL_SPACING
 
 -- Gate sits on the north edge, centered
 local GATE_WIDTH = 28
@@ -467,10 +468,11 @@ local function buildLandmarks(root: Folder)
 	landmarks.Name = "Landmarks"
 	landmarks.Parent = root
 
-	-- West edge (−X): open front faces center (+X). Local front is −Z → yaw −90°.
+	-- West edge (−X), one straight row. From spawn looking west: TOOLS | SELL | BACKPACKS.
+	-- Open fronts face center (+X). Local front is −Z → yaw −90°.
 	buildScrapStall(landmarks, {
 		name = "EquipmentShop",
-		position = Vector3.new(WEST_X, 0, TOOLS_Z),
+		position = Vector3.new(STALL_ROW_X, 0, TOOLS_Z),
 		yawDegrees = -90,
 		label = "TOOLS",
 		labelColor = ACCENT_TOOLS,
@@ -485,7 +487,7 @@ local function buildLandmarks(root: Folder)
 
 	buildScrapStall(landmarks, {
 		name = "SellStation",
-		position = Vector3.new(WEST_X, 0, SELL_Z),
+		position = Vector3.new(STALL_ROW_X, 0, SELL_Z),
 		yawDegrees = -90,
 		label = "SELL",
 		labelColor = ACCENT_SELL,
@@ -498,11 +500,10 @@ local function buildLandmarks(root: Folder)
 		roofStripeB = Color3.fromRGB(55, 95, 58),
 	})
 
-	-- East edge (+X): open front faces center (−X). Local front −Z → yaw +90°.
 	buildScrapStall(landmarks, {
 		name = "BackpackShop",
-		position = Vector3.new(EAST_X, 0, BACKPACKS_Z),
-		yawDegrees = 90,
+		position = Vector3.new(STALL_ROW_X, 0, BACKPACKS_Z),
+		yawDegrees = -90,
 		label = "BACKPACKS",
 		labelColor = ACCENT_BACKPACKS,
 		accent = ACCENT_BACKPACKS,
