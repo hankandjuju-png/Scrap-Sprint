@@ -1,12 +1,16 @@
 --!strict
 --[[
 	Procedural Starter Junkyard floor under Workspace.Map.
-	Phase 2 Task 2: floor + spawn + scrapyard stall landmarks + gate.
+	Phase 2: floor + spawn + scrapyard stalls + gate + lighting/props.
 	No sell / shop / unlock logic — tags + ProximityPrompt stubs only.
+	No collectible spawn zones (Phase 3).
 ]]
 
 local CollectionService = game:GetService("CollectionService")
 local Workspace = game:GetService("Workspace")
+
+local Atmosphere = require(script.Parent:WaitForChild("Atmosphere"))
+local PropsBuilder = require(script.Parent:WaitForChild("PropsBuilder"))
 
 local MapBuilder = {}
 
@@ -541,6 +545,7 @@ end
 ]]
 function MapBuilder.build()
 	clearDefaultWorkspaceJunk()
+	Atmosphere.apply()
 
 	local map = ensureMapFolder()
 	clearStarter(map)
@@ -553,8 +558,9 @@ function MapBuilder.build()
 	buildBoundary(root)
 	buildSpawn(root)
 	buildLandmarks(root)
+	PropsBuilder.build(root)
 
-	print("[ScrapSprint] MapBuilder: StarterJunkyard ready (landmarks)")
+	print("[ScrapSprint] MapBuilder: StarterJunkyard ready (landmarks + props)")
 end
 
 return MapBuilder
