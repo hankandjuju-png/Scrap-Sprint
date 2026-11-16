@@ -151,13 +151,23 @@ local function makePart(
 	return part
 end
 
-local function attachBillboard(part: BasePart, text: string, textColor: Color3, studsOffset: Vector3?)
+-- Stall labels ~pad range; gate a bit farther so it reads when approaching the wall.
+local LABEL_MAX_DISTANCE_STALL = 20
+local LABEL_MAX_DISTANCE_GATE = 28
+
+local function attachBillboard(
+	part: BasePart,
+	text: string,
+	textColor: Color3,
+	studsOffset: Vector3?,
+	maxDistance: number?
+)
 	local billboard = Instance.new("BillboardGui")
 	billboard.Name = "Label"
 	billboard.Size = UDim2.fromOffset(220, 56)
 	billboard.StudsOffset = studsOffset or Vector3.new(0, 3, 0)
 	billboard.AlwaysOnTop = true
-	billboard.MaxDistance = 140
+	billboard.MaxDistance = maxDistance or LABEL_MAX_DISTANCE_STALL
 	billboard.Parent = part
 
 	local label = Instance.new("TextLabel")
@@ -415,7 +425,7 @@ local function buildScrapStall(parent: Instance, config: StallConfig): Model
 	)
 	labelAnchor.Transparency = 1
 	labelAnchor.CanCollide = false
-	attachBillboard(labelAnchor, config.label, config.labelColor, Vector3.new(0, 2, 0))
+	attachBillboard(labelAnchor, config.label, config.labelColor, Vector3.new(0, 2, 0), LABEL_MAX_DISTANCE_STALL)
 
 	CollectionService:AddTag(pad, config.tag)
 	if config.shopType then
@@ -445,7 +455,13 @@ local function buildGate(landmarks: Folder)
 	CollectionService:AddTag(gate, TAG_GATE)
 	gate:SetAttribute("Locked", true)
 	gate:SetAttribute("AreaId", "area_industrial")
-	attachBillboard(gate, "INDUSTRIAL SCRAPYARD — LOCKED", Color3.fromRGB(255, 120, 100), Vector3.new(0, 2, 0))
+	attachBillboard(
+		gate,
+		"INDUSTRIAL SCRAPYARD — LOCKED",
+		Color3.fromRGB(255, 120, 100),
+		Vector3.new(0, 2, 0),
+		LABEL_MAX_DISTANCE_GATE
+	)
 	attachPromptPlaceholder(gate, "Industrial Scrapyard", "Locked")
 
 	local barCount = 5
